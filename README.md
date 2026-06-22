@@ -1,2 +1,0 @@
-# palpitesmm
-novos palpites
