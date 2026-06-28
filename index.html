@@ -98,11 +98,22 @@
   .error-msg.show{display:block}
 
   /* SUCCESS */
-  .success-card{display:none;background:#f0fbf5;border:2px solid var(--verde-campo);border-radius:var(--radius);padding:32px 20px;text-align:center;margin-top:20px}
+  .success-card{display:none;background:#f0fbf5;border:2px solid var(--verde-campo);border-radius:var(--radius);padding:20px;margin-top:20px}
   .success-card.show{display:block}
-  .success-card .emoji{font-size:48px;margin-bottom:12px}
-  .success-card h2{font-family:'Oswald',sans-serif;color:var(--verde-escuro);font-size:22px;margin-bottom:8px}
-  .success-card p{font-size:13px;color:var(--muted);line-height:1.7}
+  .success-card-header{text-align:center;margin-bottom:16px}
+  .success-card-header .emoji{font-size:44px;margin-bottom:8px}
+  .success-card-header h2{font-family:'Oswald',sans-serif;color:var(--verde-escuro);font-size:20px;margin-bottom:4px}
+  .success-card-header p{font-size:12px;color:var(--muted)}
+  .success-summary{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+  .success-summary-nome{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--verde-escuro);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .success-jogo-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #f0f0ec;font-size:11px;gap:6px}
+  .success-jogo-row:last-child{border-bottom:none}
+  .success-jogo-label{font-weight:700;color:var(--muted);flex-shrink:0;font-size:10px}
+  .success-jogo-placar{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;color:var(--verde-escuro);white-space:nowrap}
+  .success-jogo-times{color:var(--texto);font-size:11px;text-align:center;flex:1}
+  .success-pen{font-size:10px;color:var(--muted);text-align:right;flex-shrink:0}
+  .btn-salvar{width:100%;background:var(--verde-escuro);color:var(--amarelo);font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;padding:12px;border:none;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-salvar:active{opacity:0.8}
 
   /* STATUS SCREENS */
   .status-screen{text-align:center;padding:48px 20px}
@@ -157,6 +168,7 @@
     .main{padding:14px 10px}
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -528,9 +540,15 @@ function render() {
 
   // Success
   html += `<div class="success-card" id="success-card">
-    <div class="emoji">🎉</div>
-    <h2>Palpites enviados!</h2>
-    <p>Boa sorte na ${fase.label}!<br>Acompanhe o ranking no app do bolão.</p>
+    <div id="success-inner">
+      <div class="success-card-header">
+        <div class="emoji">🎉</div>
+        <h2>Palpites enviados!</h2>
+        <p>Boa sorte! Acompanhe o ranking no app do bolão.</p>
+      </div>
+      <div class="success-summary" id="success-summary"></div>
+    </div>
+    <button class="btn-salvar" onclick="salvarImagem()">📸 Salvar palpites como imagem</button>
   </div>`;
 
   root.innerHTML = html;
@@ -712,9 +730,7 @@ function updateWinner(id) {
 async function submitForm(faseId, faseLabel) {
   const nome  = document.getElementById('nome').value.trim();
   const email = document.getElementById('email').value.trim();
-  const errorEl = document.getElementById('error-msg');
   const btn = document.getElementById('submit-btn');
-  errorEl.classList.remove('show');
 
   if (!nome) { showError('⚠️ Selecione seu nome antes de enviar.'); return; }
 
@@ -727,10 +743,12 @@ async function submitForm(faseId, faseLabel) {
 
   // Monta resumo
   let linhas = [`PALPITES COPA DU MUNDU`, `Fase: ${faseLabel}`, `Participante: ${nome}`, email ? `Email: ${email}` : '', '--- PALPITES ---'];
+  const jogosParaExibir = [];
   fase.jogos.forEach(j => {
     const a = document.getElementById('golsA_' + j.id).value;
     const b = document.getElementById('golsB_' + j.id).value;
     let linha = `${j.label} | ${j.teamA} ${a} x ${b} ${j.teamB}`;
+    const jogoExib = { label: j.label, teamA: j.teamA, teamB: j.teamB, golsA: a, golsB: b, pen: null };
     if (parseInt(a) === parseInt(b)) {
       const pen = document.getElementById('pen_' + j.id);
       const pA  = document.getElementById('penA_' + j.id)?.value;
@@ -741,10 +759,13 @@ async function submitForm(faseId, faseLabel) {
         const fA = pen?.dataset.fa, fB = pen?.dataset.fb;
         const winner = parseInt(pA) > parseInt(pB) ? `${fA} ${tA}` : `${fB} ${tB}`;
         linha += ` → avança: ${winner}`;
+        jogoExib.pen = { pA, pB, winner };
       }
     }
     linhas.push(linha);
+    jogosParaExibir.push(jogoExib);
   });
+  window._lastSubmit = { nome, faseLabel, jogos: jogosParaExibir };
 
   btn.disabled = true;
   btn.textContent = 'Enviando...';
@@ -761,9 +782,9 @@ async function submitForm(faseId, faseLabel) {
     });
     if (resp.ok) {
       btn.style.display = 'none';
+      renderSuccessCard();
       document.getElementById('success-card').classList.add('show');
-      document.querySelector('.submit-note').style.display = 'none';
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       throw new Error(resp.status);
     }
@@ -779,6 +800,49 @@ function showError(msg) {
   const lastIdx = totalMatchPages - 1;
   const el = document.getElementById('error-page-' + lastIdx);
   if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+// ============================================================
+// SUCCESS CARD + SALVAR IMAGEM
+// ============================================================
+function renderSuccessCard() {
+  const data = window._lastSubmit;
+  if (!data) return;
+  const el = document.getElementById('success-summary');
+  if (!el) return;
+
+  let html = `<div class="success-summary-nome">⚽ ${data.nome} · ${data.faseLabel}</div>`;
+  data.jogos.forEach(j => {
+    const isPen = j.golsA === j.golsB && j.pen;
+    html += `<div class="success-jogo-row">
+      <span class="success-jogo-label">${j.label}</span>
+      <span class="success-jogo-times">${j.teamA}</span>
+      <span class="success-jogo-placar">${j.golsA} × ${j.golsB}</span>
+      <span class="success-jogo-times">${j.teamB}</span>
+      ${isPen ? `<span class="success-pen">pên: ${j.pen.pA}–${j.pen.pB}</span>` : '<span class="success-pen"></span>'}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+async function salvarImagem() {
+  const el = document.getElementById('success-inner');
+  if (!el) return;
+  const btn = document.querySelector('.btn-salvar');
+  btn.textContent = '⏳ Gerando imagem...';
+  btn.disabled = true;
+  try {
+    const canvas = await html2canvas(el, { backgroundColor: '#f0fbf5', scale: 2 });
+    const link = document.createElement('a');
+    const data = window._lastSubmit;
+    link.download = `palpites_${(data?.nome || 'bolao').replace(/\s+/g,'_')}_${(data?.faseLabel || '').replace(/\s+/g,'_')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Erro ao gerar imagem. Tente um print de tela!');
+  }
+  btn.textContent = '📸 Salvar palpites como imagem';
+  btn.disabled = false;
 }
 
 // ============================================================
