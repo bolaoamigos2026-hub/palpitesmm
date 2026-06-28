@@ -60,19 +60,29 @@
   .team-flag{font-size:18px}
   .vs-sep{font-family:'Oswald',sans-serif;font-size:12px;color:var(--muted);font-weight:700;text-align:center}
   .score-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:10px}
-  .score-input{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--verde-escuro);text-align:center;border:2px solid var(--border);border-radius:10px;padding:6px 4px;width:100%;background:#f9fbf7;-moz-appearance:textfield}
-  .score-input::-webkit-outer-spin-button,.score-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  .score-input:focus{outline:none;border-color:var(--verde-campo);background:#f0fbf5}
   .score-x{font-family:'Oswald',sans-serif;font-size:16px;color:var(--muted);font-weight:700;text-align:center}
+  .stepper{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
+  .stepper-btn{width:100%;background:#f0f5ee;border:1.5px solid var(--border);color:var(--verde-campo);font-size:14px;font-weight:700;padding:5px 0;cursor:pointer;transition:background 0.15s;user-select:none;line-height:1}
+  .stepper-btn:hover{background:#d8edd8}
+  .stepper-btn:active{background:#c0dfc0}
+  .stepper-btn.up{border-radius:8px 8px 0 0;border-bottom:none}
+  .stepper-btn.down{border-radius:0 0 8px 8px;border-top:none}
+  .score-input{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--verde-escuro);text-align:center;border:1.5px solid var(--border);border-top:none;border-bottom:none;border-radius:0;padding:6px 4px;width:100%;background:#f9fbf7;-moz-appearance:textfield;outline:none}
+  .score-input::-webkit-outer-spin-button,.score-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .score-input:focus{background:#f0fbf5;border-color:var(--border)}
   .penalty-row{display:none;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 14px;margin-top:6px;flex-direction:column;gap:10px}
   .penalty-row.show{display:flex}
   .penalty-label{font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px}
   .penalty-score-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .penalty-team-name{font-size:12px;font-weight:700;color:#92400e;white-space:nowrap;flex:1;min-width:60px}
   .penalty-team-name.right{text-align:right}
-  .pen-input{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#92400e;text-align:center;border:2px solid #fcd34d;border-radius:8px;padding:6px 4px;width:64px;background:#fff;-moz-appearance:textfield;flex-shrink:0}
+  .pen-stepper{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:56px}
+  .pen-stepper-btn{width:100%;background:#fef9c3;border:1.5px solid #fcd34d;color:#92400e;font-size:13px;font-weight:700;padding:4px 0;cursor:pointer;transition:background 0.15s;user-select:none;line-height:1}
+  .pen-stepper-btn:hover{background:#fde68a}
+  .pen-stepper-btn.up{border-radius:6px 6px 0 0;border-bottom:none}
+  .pen-stepper-btn.down{border-radius:0 0 6px 6px;border-top:none}
+  .pen-input{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#92400e;text-align:center;border:1.5px solid #fcd34d;border-top:none;border-bottom:none;border-radius:0;padding:5px 2px;width:100%;background:#fff;-moz-appearance:textfield;outline:none}
   .pen-input::-webkit-outer-spin-button,.pen-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  .pen-input:focus{outline:none;border-color:#f59e0b;background:#fffde7}
   .pen-x{font-family:'Oswald',sans-serif;font-size:14px;color:#b45309;font-weight:700;flex-shrink:0}
   .winner-display{display:none;margin-top:6px;padding:7px 12px;border-radius:7px;background:#166534;color:#fff;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.3px}
   .winner-display.show{display:block}
@@ -102,6 +112,25 @@
   .next-phase-card{background:var(--verde-escuro);border-radius:var(--radius);padding:14px 18px;margin-top:20px;max-width:340px;margin-left:auto;margin-right:auto}
   .next-phase-card .label{font-size:10px;font-weight:700;color:#9fd9a8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
   .next-phase-card .value{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--amarelo)}
+
+  /* PONTUAÇÃO CARD */
+  .pontos-card{background:var(--verde-escuro);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px}
+  .pontos-titulo{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--amarelo);margin-bottom:10px}
+  .pontos-tabela{width:100%;border-collapse:collapse;margin-bottom:10px}
+  .pontos-tabela tr{border-bottom:1px solid rgba(255,255,255,0.08)}
+  .pontos-tabela tr:last-child{border-bottom:none}
+  .pontos-tabela td{padding:6px 2px;font-size:12px;color:#c8e8cc}
+  .pontos-tabela td:last-child{text-align:right;font-family:'Oswald',sans-serif;font-weight:700;color:var(--amarelo);white-space:nowrap}
+  .pontos-nota{font-size:10px;color:#9fd9a8;line-height:1.5;margin-top:6px;font-style:italic}
+  .pontos-formulario{background:var(--amarelo);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .pontos-form-titulo{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:var(--verde-escuro);margin-bottom:8px}
+  .pontos-form-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(10,54,34,0.1)}
+  .pontos-form-row:last-of-type{border-bottom:none}
+  .pontos-form-desc{font-size:12px;font-weight:600;color:var(--verde-escuro)}
+  .pontos-form-pts{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--verde-campo)}
+  .pontos-form-aviso{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:rgba(10,54,34,0.1);border-radius:8px;padding:8px 10px}
+  .pontos-form-aviso span{font-size:11px;color:var(--verde-escuro);line-height:1.5}
+  .pontos-form-aviso strong{font-weight:700}
 
   /* PAGINATION */
   .progress-wrap{margin-bottom:18px}
@@ -189,24 +218,24 @@ const FASES = [
     label: '16avos de Final',
     emoji: '⚔️',
     deadline: DEADLINES.r16,
-    pontuacao: '7 pts (2 times + placar exato) · 5 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
     jogos: [
-      {id:73, label:'J73', date:'28/06', teamA:'África do Sul',       teamB:'Canadá',       flagA:'🇿🇦', flagB:'🇨🇦'},
-      {id:74, label:'J74', date:'29/06', teamA:'Alemanha',       teamB:'3ª ABCDF',   flagA:'🇩🇪', flagB:'🏳️'},
-      {id:75, label:'J75', date:'29/06', teamA:'1ª F',       teamB:'Marrocos',       flagA:'🏳️', flagB:'🇲🇦'},
-      {id:76, label:'J76', date:'29/06', teamA:'Brasil',       teamB:'2ª F',       flagA:'🇧🇷', flagB:'🏳️'},
-      {id:77, label:'J77', date:'30/06', teamA:'1ª I',       teamB:'3ª CDFGH',   flagA:'🏳️', flagB:'🏳️'},
-      {id:78, label:'J78', date:'30/06', teamA:'2ª E',       teamB:'2ª I',       flagA:'🏳️', flagB:'🏳️'},
-      {id:79, label:'J79', date:'30/06', teamA:'México',       teamB:'3ª CEFHI',   flagA:'🇲🇽', flagB:'🏳️'},
-      {id:80, label:'J80', date:'01/07', teamA:'1ª L',       teamB:'3ª EHIJK',   flagA:'🏳️', flagB:'🏳️'},
-      {id:81, label:'J81', date:'01/07', teamA:'Estados Unidos',       teamB:'3ª BEFIJ',   flagA:'🇺🇸', flagB:'🏳️'},
-      {id:82, label:'J82', date:'01/07', teamA:'1ª G',       teamB:'3ª AEHIJ',   flagA:'🏳️', flagB:'🏳️'},
-      {id:83, label:'J83', date:'02/07', teamA:'2ª K',       teamB:'2ª L',       flagA:'🏳️', flagB:'🏳️'},
-      {id:84, label:'J84', date:'02/07', teamA:'1ª H',       teamB:'2ª J',       flagA:'🏳️', flagB:'🏳️'},
-      {id:85, label:'J85', date:'03/07', teamA:'Suíça',       teamB:'3ª EFGIJ',   flagA:'🇨🇭', flagB:'🏳️'},
-      {id:86, label:'J86', date:'03/07', teamA:'Argentina',       teamB:'2ª H',       flagA:'🇦🇷', flagB:'🏳️'},
-      {id:87, label:'J87', date:'03/07', teamA:'1ª K',       teamB:'3ª DEIJL',   flagA:'🏳️', flagB:'🏳️'},
-      {id:88, label:'J88', date:'03/07', teamA:'2ª D',       teamB:'2ª G',       flagA:'🏳️', flagB:'🏳️'},
+      {id:73, label:'J73', date:'28/06', teamA:'África do Sul', teamB:'Canadá',       flagA:'🇿🇦', flagB:'🇨🇦'},
+      {id:74, label:'J74', date:'28/06', teamA:'Alemanha',      teamB:'Paraguai',     flagA:'🇩🇪', flagB:'🇵🇾'},
+      {id:75, label:'J75', date:'29/06', teamA:'Holanda',       teamB:'Marrocos',     flagA:'🇳🇱', flagB:'🇲🇦'},
+      {id:76, label:'J76', date:'29/06', teamA:'Brasil',        teamB:'Japão',        flagA:'🇧🇷', flagB:'🇯🇵'},
+      {id:77, label:'J77', date:'29/06', teamA:'França',        teamB:'Suécia',       flagA:'🇫🇷', flagB:'🇸🇪'},
+      {id:78, label:'J78', date:'30/06', teamA:'Costa do Marfim', teamB:'Noruega',    flagA:'🇨🇮', flagB:'🇳🇴'},
+      {id:79, label:'J79', date:'30/06', teamA:'México',        teamB:'Equador',      flagA:'🇲🇽', flagB:'🇪🇨'},
+      {id:80, label:'J80', date:'30/06', teamA:'Inglaterra',    teamB:'RD Congo',     flagA:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagB:'🇨🇩'},
+      {id:81, label:'J81', date:'01/07', teamA:'Estados Unidos',teamB:'Bósnia',       flagA:'🇺🇸', flagB:'🇧🇦'},
+      {id:82, label:'J82', date:'01/07', teamA:'Bélgica',       teamB:'Senegal',      flagA:'🇧🇪', flagB:'🇸🇳'},
+      {id:83, label:'J83', date:'01/07', teamA:'Portugal',      teamB:'Croácia',      flagA:'🇵🇹', flagB:'🇭🇷'},
+      {id:84, label:'J84', date:'02/07', teamA:'Espanha',       teamB:'Áustria',      flagA:'🇪🇸', flagB:'🇦🇹'},
+      {id:85, label:'J85', date:'02/07', teamA:'Suíça',         teamB:'Argélia',      flagA:'🇨🇭', flagB:'🇩🇿'},
+      {id:86, label:'J86', date:'02/07', teamA:'Argentina',     teamB:'Cabo Verde',   flagA:'🇦🇷', flagB:'🇨🇻'},
+      {id:87, label:'J87', date:'03/07', teamA:'Colômbia',      teamB:'Gana',         flagA:'🇨🇴', flagB:'🇬🇭'},
+      {id:88, label:'J88', date:'03/07', teamA:'Austrália',     teamB:'Egito',        flagA:'🇦🇺', flagB:'🇪🇬'},
     ]
   },
   {
@@ -214,7 +243,7 @@ const FASES = [
     label: 'Oitavas de Final',
     emoji: '🔥',
     deadline: DEADLINES.oitavas,
-    pontuacao: '7 pts (2 times + placar exato) · 5 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
     jogos: [
       {id:89, label:'J89', date:'04/07', teamA:'W74×W77', teamB:'???', flagA:'🏳️', flagB:'🏳️'},
       {id:90, label:'J90', date:'04/07', teamA:'W73×W75', teamB:'???', flagA:'🏳️', flagB:'🏳️'},
@@ -231,7 +260,7 @@ const FASES = [
     label: 'Quartas de Final',
     emoji: '💥',
     deadline: DEADLINES.quartas,
-    pontuacao: '7 pts (2 times + placar exato) · 5 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
     jogos: [
       {id:97,  label:'J97',  date:'09/07', teamA:'W89', teamB:'W90', flagA:'🏳️', flagB:'🏳️'},
       {id:98,  label:'J98',  date:'10/07', teamA:'W93', teamB:'W94', flagA:'🏳️', flagB:'🏳️'},
@@ -244,7 +273,7 @@ const FASES = [
     label: 'Semifinais',
     emoji: '🌟',
     deadline: DEADLINES.semis,
-    pontuacao: '7 pts (2 times + placar exato) · 5 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
     jogos: [
       {id:101, label:'J101', date:'14/07', teamA:'W97',  teamB:'W98',  flagA:'🏳️', flagB:'🏳️'},
       {id:102, label:'J102', date:'15/07', teamA:'W99',  teamB:'W100', flagA:'🏳️', flagB:'🏳️'},
@@ -255,7 +284,7 @@ const FASES = [
     label: 'Final + 3º Lugar',
     emoji: '🏆',
     deadline: DEADLINES.final,
-    pontuacao: '7 pts (2 times + placar exato) · 5 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo) · ⚠️ Placar exato inclui pênaltis quando houver',
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo) · ⚠️ Placar exato inclui pênaltis quando houver',
     jogos: [
       {id:103, label:'J103 · 3º Lugar', date:'18/07', teamA:'RU101', teamB:'RU102', flagA:'🏳️', flagB:'🏳️'},
       {id:104, label:'J104 · Final 🏆', date:'19/07', teamA:'W101',  teamB:'W102',  flagA:'🏳️', flagB:'🏳️'},
@@ -382,9 +411,30 @@ function render() {
   // ── IDENTITY PAGE ──
   html += `<div class="identity-page active" id="page-identity">
     <div class="pontos-card">
-      <strong>Como pontua · ${fase.label}</strong>
-      <div class="pontos-grid">
-        ${fase.pontuacao.split('·').map(p => `<span class="ponto-item">${p.trim()}</span>`).join('')}
+      <div class="pontos-titulo">🏆 Mata-Mata · Como pontua</div>
+      <table class="pontos-tabela">
+        <tr><td>Acertou os 2 times e o placar exato</td><td>8 pts</td></tr>
+        <tr><td>Acertou 1 dos times e o placar exato</td><td>4 pts</td></tr>
+        <tr><td>Acertou os 2 times, sem o placar exato</td><td>4 pts</td></tr>
+        <tr><td>Acertou 1 dos times, sem o placar exato</td><td>2 pts</td></tr>
+        <tr><td>Errou os 2 times, mas acertou o placar exato</td><td>1 pt</td></tr>
+        <tr><td>Errou tudo</td><td>0 pts</td></tr>
+      </table>
+      <div class="pontos-nota">"Placar exato" considera o tempo normal e, quando o jogo vai aos pênaltis, considera também o placar dos pênaltis.</div>
+      <div class="pontos-formulario">
+        <div class="pontos-form-titulo">📋 NOVO PLACAR · FORMULÁRIO</div>
+        <div class="pontos-form-row">
+          <span class="pontos-form-desc">Acertou o vencedor e o placar exato</span>
+          <span class="pontos-form-pts">+3 pts</span>
+        </div>
+        <div class="pontos-form-row">
+          <span class="pontos-form-desc">Acertou o vencedor</span>
+          <span class="pontos-form-pts">+1 pt</span>
+        </div>
+        <div class="pontos-form-aviso">
+          <span>⚠️</span>
+          <span>Essa pontuação extra só é aplicada quando a pontuação obtida pela regra do Mata-Mata for <strong style="color:#dc2626">igual ou menor a 4 pontos</strong>.</span>
+        </div>
       </div>
     </div>
     <div class="section-label">Quem é você?</div>
@@ -426,9 +476,17 @@ function render() {
             <div><div class="team-name"><span class="team-flag">${j.flagB}</span><span>${j.teamB}</span></div></div>
           </div>
           <div class="score-row">
-            <input class="score-input" type="number" min="0" max="20" id="golsA_${j.id}" placeholder="0" oninput="checkDraw(${j.id})">
+            <div class="stepper">
+              <button type="button" class="stepper-btn up" onclick="stepScore('golsA_${j.id}',1,${j.id})">▲</button>
+              <input class="score-input" type="number" inputmode="numeric" min="0" max="20" id="golsA_${j.id}" value="0" oninput="checkDraw(${j.id})">
+              <button type="button" class="stepper-btn down" onclick="stepScore('golsA_${j.id}',-1,${j.id})">▼</button>
+            </div>
             <div class="score-x">×</div>
-            <input class="score-input" type="number" min="0" max="20" id="golsB_${j.id}" placeholder="0" oninput="checkDraw(${j.id})">
+            <div class="stepper">
+              <button type="button" class="stepper-btn up" onclick="stepScore('golsB_${j.id}',1,${j.id})">▲</button>
+              <input class="score-input" type="number" inputmode="numeric" min="0" max="20" id="golsB_${j.id}" value="0" oninput="checkDraw(${j.id})">
+              <button type="button" class="stepper-btn down" onclick="stepScore('golsB_${j.id}',-1,${j.id})">▼</button>
+            </div>
           </div>
           <div class="penalty-row" id="pen_${j.id}"
             data-ta="${j.teamA}" data-tb="${j.teamB}"
@@ -436,9 +494,17 @@ function render() {
             <div class="penalty-label">🟡 Empate no tempo normal — placar nos pênaltis:</div>
             <div class="penalty-score-row">
               <span class="penalty-team-name right">${j.flagA} ${j.teamA}</span>
-              <input class="pen-input" type="number" min="0" max="20" id="penA_${j.id}" placeholder="0" oninput="updateWinner(${j.id})">
+              <div class="pen-stepper">
+                <button type="button" class="pen-stepper-btn up" onclick="stepPen('penA_${j.id}',1,${j.id})">▲</button>
+                <input class="pen-input" type="number" inputmode="numeric" min="0" max="20" id="penA_${j.id}" value="0" oninput="updateWinner(${j.id})">
+                <button type="button" class="pen-stepper-btn down" onclick="stepPen('penA_${j.id}',-1,${j.id})">▼</button>
+              </div>
               <span class="pen-x">×</span>
-              <input class="pen-input" type="number" min="0" max="20" id="penB_${j.id}" placeholder="0" oninput="updateWinner(${j.id})">
+              <div class="pen-stepper">
+                <button type="button" class="pen-stepper-btn up" onclick="stepPen('penB_${j.id}',1,${j.id})">▲</button>
+                <input class="pen-input" type="number" inputmode="numeric" min="0" max="20" id="penB_${j.id}" value="0" oninput="updateWinner(${j.id})">
+                <button type="button" class="pen-stepper-btn down" onclick="stepPen('penB_${j.id}',-1,${j.id})">▼</button>
+              </div>
               <span class="penalty-team-name">${j.teamB} ${j.flagB}</span>
             </div>
             <div class="winner-display" id="winner_${j.id}"></div>
@@ -563,6 +629,25 @@ function validateJogos(jogos) {
     }
   });
   return missing;
+}
+
+// ============================================================
+// STEPPER FUNCTIONS
+// ============================================================
+function stepScore(id, delta, matchId) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const val = parseInt(el.value) || 0;
+  el.value = Math.max(0, Math.min(20, val + delta));
+  checkDraw(matchId);
+}
+
+function stepPen(id, delta, matchId) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const val = parseInt(el.value) || 0;
+  el.value = Math.max(0, Math.min(20, val + delta));
+  updateWinner(matchId);
 }
 
 // ============================================================
