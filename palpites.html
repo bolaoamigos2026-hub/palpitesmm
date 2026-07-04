@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palpites · Mata-Mata · Copa Du MunDu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --verde-escuro:#0a3622; --verde-campo:#1a6b2f; --amarelo:#f5d442;
+    --texto:#0a3622; --muted:#4a7c5e; --border:#d0dcc8;
+    --shadow:0 2px 12px rgba(10,54,34,0.08); --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#eef2e8;color:var(--texto);min-height:100vh;padding-bottom:48px}
+
+  /* HEADER */
+  .header{background:var(--verde-escuro);padding:16px 20px 14px;display:flex;align-items:center;gap:14px;border-bottom:3px solid var(--amarelo)}
+  .header-emblem{width:44px;height:44px;background:var(--amarelo);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .header-titles h1{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--amarelo);letter-spacing:1.5px;line-height:1}
+  .header-titles p{font-size:11px;color:#9fd9a8;margin-top:3px;letter-spacing:1px;text-transform:uppercase}
+  .fase-pill{margin-left:auto;background:rgba(245,212,66,0.15);border:1.5px solid rgba(245,212,66,0.4);color:var(--amarelo);font-family:'Oswald',sans-serif;font-weight:700;font-size:12px;padding:5px 12px;border-radius:20px;white-space:nowrap}
+
+  /* MAIN */
+  .main{max-width:680px;margin:0 auto;padding:20px 16px}
+
+  /* COUNTDOWN */
+  .countdown-bar{background:var(--verde-escuro);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .countdown-label{font-size:11px;font-weight:700;color:#9fd9a8;text-transform:uppercase;letter-spacing:0.5px}
+  .countdown-value{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--amarelo)}
+  .countdown-warning{background:#7c2d12;border-radius:var(--radius);padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .countdown-warning span{font-size:13px;color:#fef3c7;font-weight:600}
+  .countdown-warning strong{color:#fbbf24}
+
+  /* PONTUAÇÃO */
+  .pontos-card{background:var(--verde-escuro);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;color:#c8e8cc;font-size:12px;line-height:1.5}
+  .pontos-card strong{color:var(--amarelo);font-family:'Oswald',sans-serif;font-size:14px}
+  .pontos-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .ponto-item{background:rgba(245,212,66,0.12);border:1px solid rgba(245,212,66,0.3);border-radius:7px;padding:5px 10px;font-size:10px;color:var(--amarelo);font-weight:600}
+
+  /* IDENTITY */
+  .section-label{font-family:'Oswald',sans-serif;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .identity-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+  .field-group{display:flex;flex-direction:column;gap:5px}
+  .field-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+  .field-select,.field-input{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--texto);width:100%;cursor:pointer;appearance:none}
+  .field-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a7c5e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+  .field-select:focus,.field-input:focus{outline:none;border-color:var(--verde-campo)}
+
+  /* MATCH CARD */
+  .match-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+  .match-header{background:var(--verde-escuro);padding:8px 14px;display:flex;align-items:center;gap:8px}
+  .match-num{font-family:'Oswald',sans-serif;font-size:11px;font-weight:700;color:var(--amarelo);background:rgba(245,212,66,0.15);border:1px solid rgba(245,212,66,0.3);border-radius:5px;padding:2px 7px;white-space:nowrap}
+  .match-slot{font-size:10px;color:#9fd9a8}
+  .match-date{font-size:10px;color:#6aaf7a;margin-left:auto;white-space:nowrap}
+  .match-body{padding:12px 14px}
+  .match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:12px}
+  .team-name{font-size:12px;font-weight:700;color:var(--texto);display:flex;align-items:center;gap:6px}
+  .team-name.right{justify-content:flex-end;text-align:right}
+  .team-flag{font-size:18px}
+  .vs-sep{font-family:'Oswald',sans-serif;font-size:12px;color:var(--muted);font-weight:700;text-align:center}
+  .score-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:10px}
+  .score-x{font-family:'Oswald',sans-serif;font-size:16px;color:var(--muted);font-weight:700;text-align:center}
+  .stepper{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
+  .stepper-btn{width:100%;background:#f0f5ee;border:1.5px solid var(--border);color:var(--verde-campo);font-size:14px;font-weight:700;padding:5px 0;cursor:pointer;transition:background 0.15s;user-select:none;line-height:1}
+  .stepper-btn:hover{background:#d8edd8}
+  .stepper-btn:active{background:#c0dfc0}
+  .stepper-btn.up{border-radius:8px 8px 0 0;border-bottom:none}
+  .stepper-btn.down{border-radius:0 0 8px 8px;border-top:none}
+  .score-input{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--verde-escuro);text-align:center;border:1.5px solid var(--border);border-top:none;border-bottom:none;border-radius:0;padding:6px 4px;width:100%;background:#f9fbf7;-moz-appearance:textfield;outline:none}
+  .score-input::-webkit-outer-spin-button,.score-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .score-input:focus{background:#f0fbf5;border-color:var(--border)}
+  .penalty-row{display:none;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 14px;margin-top:6px;flex-direction:column;gap:10px}
+  .penalty-row.show{display:flex}
+  .penalty-label{font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px}
+  .penalty-score-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .penalty-team-name{font-size:12px;font-weight:700;color:#92400e;white-space:nowrap;flex:1;min-width:60px}
+  .penalty-team-name.right{text-align:right}
+  .pen-stepper{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:56px}
+  .pen-stepper-btn{width:100%;background:#fef9c3;border:1.5px solid #fcd34d;color:#92400e;font-size:13px;font-weight:700;padding:4px 0;cursor:pointer;transition:background 0.15s;user-select:none;line-height:1}
+  .pen-stepper-btn:hover{background:#fde68a}
+  .pen-stepper-btn.up{border-radius:6px 6px 0 0;border-bottom:none}
+  .pen-stepper-btn.down{border-radius:0 0 6px 6px;border-top:none}
+  .pen-input{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#92400e;text-align:center;border:1.5px solid #fcd34d;border-top:none;border-bottom:none;border-radius:0;padding:5px 2px;width:100%;background:#fff;-moz-appearance:textfield;outline:none}
+  .pen-input::-webkit-outer-spin-button,.pen-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .pen-x{font-family:'Oswald',sans-serif;font-size:14px;color:#b45309;font-weight:700;flex-shrink:0}
+  .winner-display{display:none;margin-top:6px;padding:7px 12px;border-radius:7px;background:#166534;color:#fff;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.3px}
+  .winner-display.show{display:block}
+  .winner-display.error{background:#dc2626}
+
+  /* SUBMIT */
+  .submit-section{margin-top:24px}
+  .submit-btn{width:100%;background:var(--verde-campo);color:var(--amarelo);font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;padding:12px;border:none;border-radius:var(--radius);cursor:pointer;transition:background 0.2s}
+  .submit-btn:hover{background:var(--verde-escuro)}
+  .submit-btn:disabled{opacity:0.5;cursor:wait}
+  .submit-note{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
+  .error-msg{display:none;color:#dc2626;font-size:13px;font-weight:600;margin-top:8px;text-align:center;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px}
+  .error-msg.show{display:block}
+
+  /* SUCCESS */
+  .success-card{display:none;background:#f0fbf5;border:2px solid var(--verde-campo);border-radius:var(--radius);padding:20px;margin-top:20px}
+  .success-card.show{display:block}
+  .success-card-header{text-align:center;margin-bottom:16px}
+  .success-card-header .emoji{font-size:44px;margin-bottom:8px}
+  .success-card-header h2{font-family:'Oswald',sans-serif;color:var(--verde-escuro);font-size:20px;margin-bottom:4px}
+  .success-card-header p{font-size:12px;color:var(--muted)}
+  .success-summary{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+  .success-summary-nome{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--verde-escuro);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .success-jogo-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #f0f0ec;font-size:11px;gap:6px}
+  .success-jogo-row:last-child{border-bottom:none}
+  .success-jogo-label{font-weight:700;color:var(--muted);flex-shrink:0;font-size:10px}
+  .success-jogo-placar{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;color:var(--verde-escuro);white-space:nowrap}
+  .success-jogo-times{color:var(--texto);font-size:11px;text-align:center;flex:1}
+  .success-pen{font-size:10px;color:var(--muted);text-align:right;flex-shrink:0}
+  .btn-salvar{width:100%;background:var(--verde-escuro);color:var(--amarelo);font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;padding:12px;border:none;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-salvar:active{opacity:0.8}
+
+  /* STATUS SCREENS */
+  .status-screen{text-align:center;padding:48px 20px}
+  .status-screen .big-emoji{font-size:56px;margin-bottom:16px}
+  .status-screen h2{font-family:'Oswald',sans-serif;font-size:22px;color:var(--verde-escuro);margin-bottom:8px}
+  .status-screen p{font-size:13px;color:var(--muted);line-height:1.6;max-width:340px;margin:0 auto}
+  .next-phase-card{background:var(--verde-escuro);border-radius:var(--radius);padding:14px 18px;margin-top:20px;max-width:340px;margin-left:auto;margin-right:auto}
+  .next-phase-card .label{font-size:10px;font-weight:700;color:#9fd9a8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+  .next-phase-card .value{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--amarelo)}
+
+  /* PONTUAÇÃO CARD */
+  .pontos-card{background:var(--verde-escuro);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px}
+  .pontos-titulo{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--amarelo);margin-bottom:10px}
+  .pontos-tabela{width:100%;border-collapse:collapse;margin-bottom:10px}
+  .pontos-tabela tr{border-bottom:1px solid rgba(255,255,255,0.08)}
+  .pontos-tabela tr:last-child{border-bottom:none}
+  .pontos-tabela td{padding:6px 2px;font-size:12px;color:#c8e8cc}
+  .pontos-tabela td:last-child{text-align:right;font-family:'Oswald',sans-serif;font-weight:700;color:var(--amarelo);white-space:nowrap}
+  .pontos-nota{font-size:10px;color:#9fd9a8;line-height:1.5;margin-top:6px;font-style:italic}
+  .pontos-formulario{background:var(--amarelo);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .pontos-form-titulo{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:var(--verde-escuro);margin-bottom:8px}
+  .pontos-form-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(10,54,34,0.1)}
+  .pontos-form-row:last-of-type{border-bottom:none}
+  .pontos-form-desc{font-size:12px;font-weight:600;color:var(--verde-escuro)}
+  .pontos-form-pts{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--verde-campo)}
+  .pontos-form-aviso{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:rgba(10,54,34,0.1);border-radius:8px;padding:8px 10px}
+  .pontos-form-aviso span{font-size:11px;color:var(--verde-escuro);line-height:1.5}
+  .pontos-form-aviso strong{font-weight:700}
+
+  /* PAGINATION */
+  .progress-wrap{margin-bottom:18px}
+  .progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .progress-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+  .progress-count{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:var(--verde-campo)}
+  .progress-bar-bg{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-bar-fill{height:100%;background:var(--verde-campo);border-radius:99px;transition:width 0.3s ease}
+  .match-page{display:none}
+  .match-page.active{display:block}
+  .identity-page{display:none}
+  .identity-page.active{display:block}
+  .nav-row{display:flex;gap:10px;margin-top:20px}
+  .btn-back{flex:0 0 auto;background:#fff;color:var(--verde-campo);font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;padding:11px 16px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s}
+  .btn-back:hover{border-color:var(--verde-campo)}
+  .btn-next{flex:1;background:var(--verde-campo);color:var(--amarelo);font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;padding:11px;border:none;border-radius:var(--radius);cursor:pointer;transition:background 0.2s}
+  .btn-next:hover{background:var(--verde-escuro)}
+  .btn-next:disabled{opacity:0.5;cursor:wait}
+  .step-tag{font-family:'Oswald',sans-serif;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;margin-top:4px}
+
+  @media(max-width:480px){
+    .team-name{font-size:11px}
+    .score-input{font-size:20px}
+    .main{padding:14px 10px}
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-emblem">⚽</div>
+  <div class="header-titles">
+    <h1>COPA DU MUNDU</h1>
+    <p>Bolão Copa 2026</p>
+  </div>
+  <div class="fase-pill" id="fase-pill">Palpites</div>
+</div>
+
+<div class="main" id="app-root"></div>
+
+<script>
+// ============================================================
+// ⚙️  CONFIG — Eduardo atualiza aqui antes de cada fase
+// ============================================================
+
+const FORMSPREE_ID = 'xlgyezon';
+
+// URL do Google Sheets (mesma usada no bolão)
+const SHEETS_MM_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSRP4QHIvMNU6dhijTW8ZmHblIXJjM8IvWjql0FpU0BoBK1Ud0Dpx9klHBEZtbDDXneMzVb0J7nYfgg/pub?gid=2081392955&single=true&output=csv';
+
+// Mapa de nome → bandeira (adicione times conforme avançam)
+const FLAG_MAP = {
+  'Brasil':'🇧🇷','Argentina':'🇦🇷','França':'🇫🇷','Alemanha':'🇩🇪','Espanha':'🇪🇸',
+  'Portugal':'🇵🇹','Inglaterra':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Holanda':'🇳🇱','Bélgica':'🇧🇪','Croácia':'🇭🇷',
+  'Itália':'🇮🇹','Uruguai':'🇺🇾','México':'🇲🇽','Estados Unidos':'🇺🇸','Canadá':'🇨🇦',
+  'Japão':'🇯🇵','Coreia do Sul':'🇰🇷','Marrocos':'🇲🇦','Senegal':'🇸🇳','Gana':'🇬🇭',
+  'Nigéria':'🇳🇬','Costa do Marfim':'🇨🇮','Egito':'🇪🇬','Camarões':'🇨🇲','Tunísia':'🇹🇳',
+  'África do Sul':'🇿🇦','Argélia':'🇩🇿','RD Congo':'🇨🇩','Suíça':'🇨🇭','Áustria':'🇦🇹',
+  'Suécia':'🇸🇪','Noruega':'🇳🇴','Dinamarca':'🇩🇰','Polônia':'🇵🇱','Sérvia':'🇷🇸',
+  'Turquia':'🇹🇷','Ucrânia':'🇺🇦','Eslováquia':'🇸🇰','Eslovênia':'🇸🇮','Albânia':'🇦🇱',
+  'Romênia':'🇷🇴','Geórgia':'🇬🇪','Austrália':'🇦🇺','Nova Zelândia':'🇳🇿','Irã':'🇮🇷',
+  'Arábia Saudita':'🇸🇦','Catar':'🇶🇦','Iraque':'🇮🇶','Jordânia':'🇯🇴','Uzbequistão':'🇺🇿',
+  'Colômbia':'🇨🇴','Chile':'🇨🇱','Equador':'🇪🇨','Peru':'🇵🇪','Paraguai':'🇵🇾',
+  'Bolívia':'🇧🇴','Venezuela':'🇻🇪','Panamá':'🇵🇦','Costa Rica':'🇨🇷','Honduras':'🇭🇳',
+  'El Salvador':'🇸🇻','Jamaica':'🇯🇲','Curaçao':'🇨🇼','Haiti':'🇭🇹','Cabo Verde':'🇨🇻',
+  'Escócia':'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+};
+function getFlag(name) { return FLAG_MAP[name] || '🏳️'; } // ← cole o ID do formspree.io aqui
+
+// Prazos: 30min antes do primeiro jogo de cada fase (horário de Brasília)
+// Formato: 'YYYY-MM-DDTHH:MM:SS-03:00'
+const DEADLINES = {
+  r16:   '2026-06-28T15:30:00-03:00',  // ← ajuste quando FIFA confirmar horário
+  oitavas: '2026-07-04T15:30:00-03:00',
+  quartas:  '2026-07-09T15:30:00-03:00',
+  semis:    '2026-07-14T15:30:00-03:00',
+  final:    '2026-07-18T14:30:00-03:00',
+};
+
+// Times de cada fase — atualize com os times reais quando se classificarem
+// flagA / flagB: emoji de bandeira
+const FASES = [
+  {
+    id: 'r16',
+    label: '16avos de Final',
+    emoji: '⚔️',
+    deadline: DEADLINES.r16,
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    jogos: [
+      {id:73, label:'J73', date:'28/06', teamA:'África do Sul', teamB:'Canadá',       flagA:'🇿🇦', flagB:'🇨🇦'},
+      {id:74, label:'J74', date:'28/06', teamA:'Alemanha',      teamB:'Paraguai',     flagA:'🇩🇪', flagB:'🇵🇾'},
+      {id:75, label:'J75', date:'29/06', teamA:'Holanda',       teamB:'Marrocos',     flagA:'🇳🇱', flagB:'🇲🇦'},
+      {id:76, label:'J76', date:'29/06', teamA:'Brasil',        teamB:'Japão',        flagA:'🇧🇷', flagB:'🇯🇵'},
+      {id:77, label:'J77', date:'29/06', teamA:'França',        teamB:'Suécia',       flagA:'🇫🇷', flagB:'🇸🇪'},
+      {id:78, label:'J78', date:'30/06', teamA:'Costa do Marfim', teamB:'Noruega',    flagA:'🇨🇮', flagB:'🇳🇴'},
+      {id:79, label:'J79', date:'30/06', teamA:'México',        teamB:'Equador',      flagA:'🇲🇽', flagB:'🇪🇨'},
+      {id:80, label:'J80', date:'30/06', teamA:'Inglaterra',    teamB:'RD Congo',     flagA:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagB:'🇨🇩'},
+      {id:81, label:'J81', date:'01/07', teamA:'Estados Unidos',teamB:'Bósnia',       flagA:'🇺🇸', flagB:'🇧🇦'},
+      {id:82, label:'J82', date:'01/07', teamA:'Bélgica',       teamB:'Senegal',      flagA:'🇧🇪', flagB:'🇸🇳'},
+      {id:83, label:'J83', date:'01/07', teamA:'Portugal',      teamB:'Croácia',      flagA:'🇵🇹', flagB:'🇭🇷'},
+      {id:84, label:'J84', date:'02/07', teamA:'Espanha',       teamB:'Áustria',      flagA:'🇪🇸', flagB:'🇦🇹'},
+      {id:85, label:'J85', date:'02/07', teamA:'Suíça',         teamB:'Argélia',      flagA:'🇨🇭', flagB:'🇩🇿'},
+      {id:86, label:'J86', date:'02/07', teamA:'Argentina',     teamB:'Cabo Verde',   flagA:'🇦🇷', flagB:'🇨🇻'},
+      {id:87, label:'J87', date:'03/07', teamA:'Colômbia',      teamB:'Gana',         flagA:'🇨🇴', flagB:'🇬🇭'},
+      {id:88, label:'J88', date:'03/07', teamA:'Austrália',     teamB:'Egito',        flagA:'🇦🇺', flagB:'🇪🇬'},
+    ]
+  },
+  {
+    id: 'oitavas',
+    label: 'Oitavas de Final',
+    emoji: '🔥',
+    deadline: DEADLINES.oitavas,
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    jogos: [
+      {id:89, label:'J89', date:'04/07', teamA:'Paraguai',      teamB:'França',         flagA:'🇵🇾', flagB:'🇫🇷'},
+      {id:90, label:'J90', date:'04/07', teamA:'Canadá',        teamB:'Marrocos',       flagA:'🇨🇦', flagB:'🇲🇦'},
+      {id:91, label:'J91', date:'05/07', teamA:'Brasil',        teamB:'Noruega',        flagA:'🇧🇷', flagB:'🇳🇴'},
+      {id:92, label:'J92', date:'05/07', teamA:'México',        teamB:'Inglaterra',     flagA:'🇲🇽', flagB:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
+      {id:93, label:'J93', date:'06/07', teamA:'Portugal',      teamB:'Espanha',        flagA:'🇵🇹', flagB:'🇪🇸'},
+      {id:94, label:'J94', date:'06/07', teamA:'Estados Unidos',teamB:'Bélgica',        flagA:'🇺🇸', flagB:'🇧🇪'},
+      {id:95, label:'J95', date:'07/07', teamA:'Argentina',     teamB:'Egito',          flagA:'🇦🇷', flagB:'🇪🇬'},
+      {id:96, label:'J96', date:'07/07', teamA:'Suíça',         teamB:'Colômbia',       flagA:'🇨🇭', flagB:'🇨🇴'},
+    ]
+  },
+  {
+    id: 'quartas',
+    label: 'Quartas de Final',
+    emoji: '💥',
+    deadline: DEADLINES.quartas,
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    jogos: [
+      {id:97,  label:'J97',  date:'09/07', teamA:'W89', teamB:'W90', flagA:'🏳️', flagB:'🏳️'},
+      {id:98,  label:'J98',  date:'10/07', teamA:'W93', teamB:'W94', flagA:'🏳️', flagB:'🏳️'},
+      {id:99,  label:'J99',  date:'11/07', teamA:'W91', teamB:'W92', flagA:'🏳️', flagB:'🏳️'},
+      {id:100, label:'J100', date:'11/07', teamA:'W95', teamB:'W96', flagA:'🏳️', flagB:'🏳️'},
+    ]
+  },
+  {
+    id: 'semis',
+    label: 'Semifinais',
+    emoji: '🌟',
+    deadline: DEADLINES.semis,
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo)',
+    jogos: [
+      {id:101, label:'J101', date:'14/07', teamA:'W97',  teamB:'W98',  flagA:'🏳️', flagB:'🏳️'},
+      {id:102, label:'J102', date:'15/07', teamA:'W99',  teamB:'W100', flagA:'🏳️', flagB:'🏳️'},
+    ]
+  },
+  {
+    id: 'final',
+    label: 'Final + 3º Lugar',
+    emoji: '🏆',
+    deadline: DEADLINES.final,
+    pontuacao: '8 pts (2 times + placar exato) · 4 pts (1 time + placar exato) · 4 pts (2 times sem placar) · 2 pts (1 time sem placar) · 1 pt (placar exato, errou os times) · 0 pts (errou tudo) · ⚠️ Placar exato inclui pênaltis quando houver',
+    jogos: [
+      {id:103, label:'J103 · 3º Lugar', date:'18/07', teamA:'RU101', teamB:'RU102', flagA:'🏳️', flagB:'🏳️'},
+      {id:104, label:'J104 · Final 🏆', date:'19/07', teamA:'W101',  teamB:'W102',  flagA:'🏳️', flagB:'🏳️'},
+    ]
+  },
+];
+
+const PARTICIPANTES = [
+  "Eduardo","Fernando","Ricardo","Caio","Guilherme","Abayomi",
+  "Matheus H.","Isabella","Melissa","Pato e Renata","Renato",
+  "Sandra","Selma","Claude","Alex"
+];
+
+// ============================================================
+// PHASE DETECTION
+// ============================================================
+function now() { return new Date(); }
+
+function getActiveFase() {
+  const t = now();
+  // Encontra a primeira fase cujo deadline ainda não passou
+  for (let i = 0; i < FASES.length; i++) {
+    const deadline = new Date(FASES[i].deadline);
+    if (t < deadline) return { fase: FASES[i], isOpen: true, deadline };
+  }
+  return { fase: null, isOpen: false, deadline: null }; // Copa encerrada
+}
+
+function getPreviousFase(faseId) {
+  const idx = FASES.findIndex(f => f.id === faseId);
+  return idx > 0 ? FASES[idx - 1] : null;
+}
+
+function getNextFase(faseId) {
+  const idx = FASES.findIndex(f => f.id === faseId);
+  return idx >= 0 && idx < FASES.length - 1 ? FASES[idx + 1] : null;
+}
+
+// ============================================================
+// COUNTDOWN
+// ============================================================
+let countdownInterval = null;
+
+function startCountdown(deadline, elementId) {
+  if (countdownInterval) clearInterval(countdownInterval);
+  function tick() {
+    const diff = new Date(deadline) - new Date();
+    if (diff <= 0) { document.getElementById(elementId).textContent = 'Prazo encerrado!'; clearInterval(countdownInterval); location.reload(); return; }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const el = document.getElementById(elementId);
+    if (el) el.textContent = `${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+  }
+  tick();
+  countdownInterval = setInterval(tick, 1000);
+}
+
+function formatDeadline(isoStr) {
+  const d = new Date(isoStr);
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago'];
+  return `${dias[d.getDay()]}, ${d.getDate()} ${meses[d.getMonth()]} às ${String(d.getHours()).padStart(2,'0')}h${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ============================================================
+// PAGINATION STATE
+// ============================================================
+let currentPage = 0; // 0 = identity, 1..N = match pages
+let activeFaseCache = null;
+const MATCHES_PER_PAGE = 2;
+
+function getPages(jogos) {
+  const pages = [];
+  for (let i = 0; i < jogos.length; i += MATCHES_PER_PAGE) {
+    pages.push(jogos.slice(i, i + MATCHES_PER_PAGE));
+  }
+  return pages;
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const root = document.getElementById('app-root');
+  const { fase, isOpen, deadline } = getActiveFase();
+
+  if (!isOpen) {
+    document.getElementById('fase-pill').textContent = 'Encerrado';
+    root.innerHTML = `<div class="status-screen">
+      <div class="big-emoji">🏆</div>
+      <h2>Copa Du MunDu encerrada!</h2>
+      <p>Todos os palpites foram coletados. Acompanhe o ranking final no app do bolão.</p>
+    </div>`;
+    return;
+  }
+
+  activeFaseCache = fase;
+  document.getElementById('fase-pill').textContent = fase.emoji + ' ' + fase.label;
+  const isUrgent = (new Date(deadline) - new Date()) < 3 * 3600 * 1000;
+  const pages = getPages(fase.jogos);
+  const totalPages = pages.length; // match pages only (identity is page 0)
+
+  let html = '';
+
+  // Countdown (always visible)
+  html += `<div class="${isUrgent ? 'countdown-warning' : 'countdown-bar'}">
+    ${isUrgent ? '<span>⚠️</span>' : ''}
+    <div>
+      <div class="countdown-label">Prazo: ${formatDeadline(deadline)}</div>
+      <div class="countdown-value" id="countdown">--h --m --s</div>
+    </div>
+  </div>`;
+
+  // Progress bar (hidden on identity page)
+  html += `<div class="progress-wrap" id="progress-wrap" style="display:none">
+    <div class="progress-top">
+      <span class="progress-label">Jogos</span>
+      <span class="progress-count" id="progress-count"></span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>`;
+
+  // ── IDENTITY PAGE ──
+  html += `<div class="identity-page active" id="page-identity">
+    <div class="section-label">Quem é você?</div>
+    <div class="identity-card">
+      <div class="field-group">
+        <label class="field-label" for="nome">Seu nome</label>
+        <select class="field-select" id="nome" required>
+          <option value="">Selecione seu nome...</option>
+          ${PARTICIPANTES.map(n => `<option>${n}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="email">Seu email (confirmação opcional)</label>
+        <input class="field-input" type="email" id="email" placeholder="seuemail@email.com">
+      </div>
+    </div>
+    <div class="error-msg" id="error-identity"></div>
+    <div class="nav-row">
+      <button class="btn-next" onclick="goNext()">Começar ⚽</button>
+    </div>
+  </div>`;
+
+  // ── MATCH PAGES ──
+  pages.forEach((pageJogos, pi) => {
+    const isLast = pi === totalPages - 1;
+    html += `<div class="match-page" id="page-match-${pi}">`;
+    pageJogos.forEach(j => {
+      html += `
+      <div class="match-card">
+        <div class="match-header">
+          <span class="match-num">${j.label}</span>
+          <span class="match-slot">${j.teamA} × ${j.teamB}</span>
+          <span class="match-date">📅 ${j.date}</span>
+        </div>
+        <div class="match-body">
+          <div class="match-teams">
+            <div><div class="team-name right"><span>${j.teamA}</span><span class="team-flag">${j.flagA}</span></div></div>
+            <div class="vs-sep">VS</div>
+            <div><div class="team-name"><span class="team-flag">${j.flagB}</span><span>${j.teamB}</span></div></div>
+          </div>
+          <div class="score-row">
+            <div class="stepper">
+              <button type="button" class="stepper-btn up" onclick="stepScore('golsA_${j.id}',1,${j.id})">▲</button>
+              <input class="score-input" type="number" inputmode="numeric" min="0" max="20" id="golsA_${j.id}" value="0" oninput="checkDraw(${j.id})">
+              <button type="button" class="stepper-btn down" onclick="stepScore('golsA_${j.id}',-1,${j.id})">▼</button>
+            </div>
+            <div class="score-x">×</div>
+            <div class="stepper">
+              <button type="button" class="stepper-btn up" onclick="stepScore('golsB_${j.id}',1,${j.id})">▲</button>
+              <input class="score-input" type="number" inputmode="numeric" min="0" max="20" id="golsB_${j.id}" value="0" oninput="checkDraw(${j.id})">
+              <button type="button" class="stepper-btn down" onclick="stepScore('golsB_${j.id}',-1,${j.id})">▼</button>
+            </div>
+          </div>
+          <div class="penalty-row" id="pen_${j.id}"
+            data-ta="${j.teamA}" data-tb="${j.teamB}"
+            data-fa="${j.flagA}" data-fb="${j.flagB}">
+            <div class="penalty-label">🟡 Empate no tempo normal — placar nos pênaltis:</div>
+            <div class="penalty-score-row">
+              <span class="penalty-team-name right">${j.flagA} ${j.teamA}</span>
+              <div class="pen-stepper">
+                <button type="button" class="pen-stepper-btn up" onclick="stepPen('penA_${j.id}',1,${j.id})">▲</button>
+                <input class="pen-input" type="number" inputmode="numeric" min="0" max="20" id="penA_${j.id}" value="0" oninput="updateWinner(${j.id})">
+                <button type="button" class="pen-stepper-btn down" onclick="stepPen('penA_${j.id}',-1,${j.id})">▼</button>
+              </div>
+              <span class="pen-x">×</span>
+              <div class="pen-stepper">
+                <button type="button" class="pen-stepper-btn up" onclick="stepPen('penB_${j.id}',1,${j.id})">▲</button>
+                <input class="pen-input" type="number" inputmode="numeric" min="0" max="20" id="penB_${j.id}" value="0" oninput="updateWinner(${j.id})">
+                <button type="button" class="pen-stepper-btn down" onclick="stepPen('penB_${j.id}',-1,${j.id})">▼</button>
+              </div>
+              <span class="penalty-team-name">${j.teamB} ${j.flagB}</span>
+            </div>
+            <div class="winner-display" id="winner_${j.id}"></div>
+          </div>
+        </div>
+      </div>`;
+    });
+
+    // Navigation
+    html += `<div class="error-msg" id="error-page-${pi}"></div>`;
+    html += `<div class="nav-row">
+      <button class="btn-back" onclick="goBack()">← Voltar</button>`;
+    if (isLast) {
+      html += `<button class="btn-next" id="submit-btn" onclick="submitForm('${fase.id}','${fase.label}')">⚽ Enviar Palpites</button>`;
+    } else {
+      html += `<button class="btn-next" onclick="goNext()">Próximo →</button>`;
+    }
+    html += `</div>`;
+    html += `</div>`; // end match-page
+  });
+
+  // Success
+  html += `<div class="success-card" id="success-card">
+    <div id="success-inner">
+      <div class="success-card-header">
+        <div class="emoji">🎉</div>
+        <h2>Palpites enviados!</h2>
+        <p>Boa sorte! Acompanhe o ranking no app do bolão.</p>
+      </div>
+      <div class="success-summary" id="success-summary"></div>
+    </div>
+    <button class="btn-salvar" onclick="salvarImagem()">📸 Salvar palpites como imagem</button>
+  </div>`;
+
+  root.innerHTML = html;
+  currentPage = 0;
+  updateProgress(pages.length);
+  startCountdown(deadline, 'countdown');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(page, totalMatchPages) {
+  // Hide all
+  document.getElementById('page-identity')?.classList.remove('active');
+  for (let i = 0; i < totalMatchPages; i++) {
+    document.getElementById('page-match-' + i)?.classList.remove('active');
+  }
+  // Show current
+  if (page === 0) {
+    document.getElementById('page-identity')?.classList.add('active');
+  } else {
+    document.getElementById('page-match-' + (page - 1))?.classList.add('active');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress(totalMatchPages) {
+  const wrap = document.getElementById('progress-wrap');
+  const fill = document.getElementById('progress-fill');
+  const count = document.getElementById('progress-count');
+  if (!wrap) return;
+  if (currentPage === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  const matchPage = currentPage - 1;
+  const totalJogos = activeFaseCache ? activeFaseCache.jogos.length : 0;
+  const doneJogos = Math.min(matchPage * MATCHES_PER_PAGE, totalJogos);
+  fill.style.width = (doneJogos / totalJogos * 100) + '%';
+  count.textContent = `${doneJogos} / ${totalJogos} jogos`;
+}
+
+function goNext() {
+  const totalMatchPages = activeFaseCache ? getPages(activeFaseCache.jogos).length : 0;
+  // Validate current page
+  if (currentPage === 0) {
+    const nome = document.getElementById('nome')?.value.trim();
+    if (!nome) {
+      const el = document.getElementById('error-identity');
+      if (el) { el.textContent = '⚠️ Selecione seu nome para continuar.'; el.classList.add('show'); }
+      return;
+    }
+    const el = document.getElementById('error-identity');
+    if (el) el.classList.remove('show');
+  } else {
+    const matchPageIdx = currentPage - 1;
+    const pages = getPages(activeFaseCache.jogos);
+    const pageJogos = pages[matchPageIdx] || [];
+    const missing = validateJogos(pageJogos);
+    const errEl = document.getElementById('error-page-' + matchPageIdx);
+    if (missing.length) {
+      if (errEl) { errEl.textContent = '⚠️ Preencha: ' + missing.join(', '); errEl.classList.add('show'); }
+      return;
+    }
+    if (errEl) errEl.classList.remove('show');
+  }
+  currentPage++;
+  showPage(currentPage, totalMatchPages);
+  updateProgress(totalMatchPages);
+}
+
+function goBack() {
+  const totalMatchPages = activeFaseCache ? getPages(activeFaseCache.jogos).length : 0;
+  if (currentPage > 0) {
+    currentPage--;
+    showPage(currentPage, totalMatchPages);
+    updateProgress(totalMatchPages);
+  }
+}
+
+function validateJogos(jogos) {
+  const missing = [];
+  jogos.forEach(j => {
+    const a = document.getElementById('golsA_' + j.id)?.value.trim();
+    const b = document.getElementById('golsB_' + j.id)?.value.trim();
+    if (!a || !b) { missing.push(j.label); return; }
+    if (parseInt(a) === parseInt(b)) {
+      const pA = document.getElementById('penA_' + j.id)?.value.trim();
+      const pB = document.getElementById('penB_' + j.id)?.value.trim();
+      if (!pA || !pB) {
+        missing.push(j.label + ' (placar dos pênaltis)');
+      } else if (parseInt(pA) === parseInt(pB)) {
+        missing.push(j.label + ' (pênaltis não podem empatar!)');
+      }
+    }
+  });
+  return missing;
+}
+
+// ============================================================
+// STEPPER FUNCTIONS
+// ============================================================
+function stepScore(id, delta, matchId) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const val = parseInt(el.value) || 0;
+  el.value = Math.max(0, Math.min(20, val + delta));
+  checkDraw(matchId);
+}
+
+function stepPen(id, delta, matchId) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const val = parseInt(el.value) || 0;
+  el.value = Math.max(0, Math.min(20, val + delta));
+  updateWinner(matchId);
+}
+
+// ============================================================
+// DRAW CHECK + WINNER DISPLAY
+// ============================================================
+function checkDraw(id) {
+  const a   = document.getElementById('golsA_' + id);
+  const b   = document.getElementById('golsB_' + id);
+  const pen = document.getElementById('pen_' + id);
+  if (!a || !b || !pen) return;
+  const isDraw = a.value !== '' && b.value !== '' && parseInt(a.value) === parseInt(b.value);
+  pen.classList.toggle('show', isDraw);
+  if (!isDraw) {
+    const wd = document.getElementById('winner_' + id);
+    if (wd) { wd.classList.remove('show','error'); wd.textContent = ''; }
+    const pA = document.getElementById('penA_' + id);
+    const pB = document.getElementById('penB_' + id);
+    if (pA) pA.value = '';
+    if (pB) pB.value = '';
+  } else {
+    updateWinner(id);
+  }
+}
+
+function updateWinner(id) {
+  const pen = document.getElementById('pen_' + id);
+  const pA  = document.getElementById('penA_' + id);
+  const pB  = document.getElementById('penB_' + id);
+  const wd  = document.getElementById('winner_' + id);
+  if (!pen || !pA || !pB || !wd) return;
+
+  const tA = pen.dataset.ta;
+  const tB = pen.dataset.tb;
+  const fA = pen.dataset.fa;
+  const fB = pen.dataset.fb;
+
+  const vA = pA.value.trim();
+  const vB = pB.value.trim();
+
+  if (vA === '' || vB === '') {
+    wd.classList.remove('show','error');
+    wd.textContent = '';
+    return;
+  }
+
+  const nA = parseInt(vA), nB = parseInt(vB);
+
+  if (nA === nB) {
+    wd.className = 'winner-display show error';
+    wd.textContent = '⚠️ Pênaltis não podem terminar empatados — revise o placar';
+    return;
+  }
+
+  const winner = nA > nB ? `${fA} ${tA}` : `${fB} ${tB}`;
+  wd.className = 'winner-display show';
+  wd.textContent = `✅ Avança: ${winner}`;
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+async function submitForm(faseId, faseLabel) {
+  const nome  = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const btn = document.getElementById('submit-btn');
+
+  if (!nome) { showError('⚠️ Selecione seu nome antes de enviar.'); return; }
+
+  // Verifica deadline novamente
+  const { fase } = getActiveFase();
+  if (!fase || fase.id !== faseId) { showError('⚠️ O prazo desta fase encerrou. Recarregue a página.'); return; }
+
+  const missing = validateJogos(fase.jogos);
+  if (missing.length) { showError('⚠️ Preencha: ' + missing.join(', ')); return; }
+
+  // Monta resumo
+  let linhas = [`PALPITES COPA DU MUNDU`, `Fase: ${faseLabel}`, `Participante: ${nome}`, email ? `Email: ${email}` : '', '--- PALPITES ---'];
+  const jogosParaExibir = [];
+  fase.jogos.forEach(j => {
+    const a = document.getElementById('golsA_' + j.id).value;
+    const b = document.getElementById('golsB_' + j.id).value;
+    let linha = `${j.label} | ${j.teamA} ${a} x ${b} ${j.teamB}`;
+    const jogoExib = { label: j.label, teamA: j.teamA, teamB: j.teamB, golsA: a, golsB: b, pen: null };
+    if (parseInt(a) === parseInt(b)) {
+      const pen = document.getElementById('pen_' + j.id);
+      const pA  = document.getElementById('penA_' + j.id)?.value;
+      const pB  = document.getElementById('penB_' + j.id)?.value;
+      if (pA !== undefined && pA !== '') {
+        linha += ` (pên: ${pA}–${pB})`;
+        const tA = pen?.dataset.ta, tB = pen?.dataset.tb;
+        const fA = pen?.dataset.fa, fB = pen?.dataset.fb;
+        const winner = parseInt(pA) > parseInt(pB) ? `${fA} ${tA}` : `${fB} ${tB}`;
+        linha += ` → avança: ${winner}`;
+        jogoExib.pen = { pA, pB, winner };
+      }
+    }
+    linhas.push(linha);
+    jogosParaExibir.push(jogoExib);
+  });
+  window._lastSubmit = { nome, faseLabel, jogos: jogosParaExibir };
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  try {
+    const resp = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        nome, email: email || 'não informado',
+        fase: faseLabel,
+        palpites: linhas.join('\n')
+      })
+    });
+    if (resp.ok) {
+      btn.style.display = 'none';
+      renderSuccessCard();
+      document.getElementById('success-card').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      throw new Error(resp.status);
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = `⚽ Enviar Palpites · ${faseLabel}`;
+    showError('⚠️ Falha ao enviar. Verifique sua conexão e tente novamente.');
+  }
+}
+
+function showError(msg) {
+  const totalMatchPages = activeFaseCache ? getPages(activeFaseCache.jogos).length : 0;
+  const lastIdx = totalMatchPages - 1;
+  const el = document.getElementById('error-page-' + lastIdx);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+// ============================================================
+// SUCCESS CARD + SALVAR IMAGEM
+// ============================================================
+function renderSuccessCard() {
+  const data = window._lastSubmit;
+  if (!data) return;
+  const el = document.getElementById('success-summary');
+  if (!el) return;
+
+  let html = `<div class="success-summary-nome">⚽ ${data.nome} · ${data.faseLabel}</div>`;
+  data.jogos.forEach(j => {
+    const isPen = j.golsA === j.golsB && j.pen;
+    html += `<div class="success-jogo-row">
+      <span class="success-jogo-label">${j.label}</span>
+      <span class="success-jogo-times">${j.teamA}</span>
+      <span class="success-jogo-placar">${j.golsA} × ${j.golsB}</span>
+      <span class="success-jogo-times">${j.teamB}</span>
+      ${isPen ? `<span class="success-pen">pên: ${j.pen.pA}–${j.pen.pB}</span>` : '<span class="success-pen"></span>'}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+async function salvarImagem() {
+  const el = document.getElementById('success-inner');
+  if (!el) return;
+  const btn = document.querySelector('.btn-salvar');
+  btn.textContent = '⏳ Gerando imagem...';
+  btn.disabled = true;
+  try {
+    const canvas = await html2canvas(el, { backgroundColor: '#f0fbf5', scale: 2 });
+    const link = document.createElement('a');
+    const data = window._lastSubmit;
+    link.download = `palpites_${(data?.nome || 'bolao').replace(/\s+/g,'_')}_${(data?.faseLabel || '').replace(/\s+/g,'_')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Erro ao gerar imagem. Tente um print de tela!');
+  }
+  btn.textContent = '📸 Salvar palpites como imagem';
+  btn.disabled = false;
+}
+
+// ============================================================
+// LOAD TEAMS FROM SHEETS + INIT
+// ============================================================
+async function loadTeamsAndRender() {
+  const root = document.getElementById('app-root');
+  root.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)">
+    <div style="font-size:32px;margin-bottom:12px">⏳</div>
+    <div style="font-family:'Oswald',sans-serif;font-size:14px">Carregando confrontos...</div>
+  </div>`;
+
+  try {
+    const resp = await fetch(SHEETS_MM_URL + '&t=' + Date.now());
+    const text = await resp.text();
+
+    // Parse CSV robusto (lida com vírgulas dentro de aspas)
+    function parseCSVRow(row) {
+      const result = []; let cur = ''; let inQ = false;
+      for (let i = 0; i < row.length; i++) {
+        const c = row[i];
+        if (c === '"') { inQ = !inQ; }
+        else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+        else { cur += c; }
+      }
+      result.push(cur.trim());
+      return result;
+    }
+
+    const rows = text.trim().split('\n').map(parseCSVRow);
+    // Colunas fixas: A=id(0), B=timeA(1), C=timeB(2)
+    const teamMap = {};
+    rows.slice(1).forEach(row => {
+      const id = parseInt(row[0]);
+      const tA = row[1]?.replace(/^"|"$/g,'').trim();
+      const tB = row[2]?.replace(/^"|"$/g,'').trim();
+      if (!isNaN(id) && tA && tB) teamMap[id] = { timeA: tA, timeB: tB };
+    });
+
+    // Aplica nos jogos de cada fase
+    FASES.forEach(fase => {
+      fase.jogos.forEach(j => {
+        if (teamMap[j.id]) {
+          const tA = teamMap[j.id].timeA;
+          const tB = teamMap[j.id].timeB;
+          if (tA) { j.teamA = tA; j.flagA = getFlag(tA); }
+          if (tB) { j.teamB = tB; j.flagB = getFlag(tB); }
+        }
+      });
+    });
+    console.log('Sheets OK — times carregados:', Object.keys(teamMap).length, 'jogos');
+  } catch(e) {
+    console.warn('Sheets indisponível, usando nomes padrão:', e);
+  }
+
+  render();
+}
+
+loadTeamsAndRender();
+</script>
+</body>
+</html>
